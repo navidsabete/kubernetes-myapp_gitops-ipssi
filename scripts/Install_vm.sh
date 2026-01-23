@@ -68,3 +68,33 @@ kubectl patch secret argocd-secret -n argocd \
     \"admin.password\": \"$HASHED_PASSWORD\",
     \"admin.passwordMtime\": \"$(date +%FT%T%Z)\"
   }}"
+
+
+echo "🔍 Vérification de l'installation de l'Ingress Controller NGINX..."
+
+if kubectl get namespace ingress-nginx &> /dev/null; then
+  echo "✅ Namespace ingress-nginx déjà présent"
+else
+  echo "📦 Installation de l'Ingress Controller NGINX..."
+  kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.14.1/deploy/static/provider/cloud/deploy.yaml
+fi
+
+
+echo "⏳ Attente du contrôleur Ingress NGINX..."
+kubectl wait --namespace ingress-nginx \
+  --for=condition=Ready pods \
+  --all \
+  --timeout=180s
+
+echo "✅ Ingress NGINX opérationnel"
+
+echo "🔹 Liste des pods Ingress NGINX pour vérification:"
+kubectl get pods -n ingress-nginx
+
+echo "🔹 Création de l'Ingress pour Argo CD..."
+echo "🔹 Application de l'Ingress Argo CD depuis argocd/ingress.yaml..."
+kubectl apply -f ../argocd/ingress.yaml
+
+
+echo "🔹 Vérification que l'Ingress Argo CD est créé..."
+kubectl get ingress -n argocd
