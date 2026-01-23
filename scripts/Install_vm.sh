@@ -98,3 +98,69 @@ kubectl apply -f ../argocd/ingress.yaml
 
 echo "🔹 Vérification que l'Ingress Argo CD est créé..."
 kubectl get ingress -n argocd
+
+
+if ! command -v ngrok &> /dev/null; then
+  echo "🌍 Installation de ngrok"
+  curl -sSL https://ngrok-agent.s3.amazonaws.com/ngrok.asc | \
+    sudo tee /etc/apt/trusted.gpg.d/ngrok.asc >/dev/null
+  echo "deb https://ngrok-agent.s3.amazonaws.com bookworm main" | \
+    sudo tee /etc/apt/sources.list.d/ngrok.list
+  sudo apt update && sudo apt install ngrok -y
+else
+  echo "✅ ngrok déjà installé"
+fi
+
+
+echo "⏳ Waiting for Argo CD server to be ready..."
+
+kubectl wait \
+  --namespace argocd \
+  --for=condition=Available \
+  deployment/argocd-server \
+  --timeout=180s
+
+
+echo "🚀 Starting port-forward for Argo CD..."
+
+kubectl port-forward \
+  svc/argocd-server \
+  -n argocd \
+  ${ARGOCD_LOCAL_PORT}:443 \
+  > /tmp/argocd-port-forward.log 2>&1 &
+
+PORT_FORWARD_PID=$!
+sleep 5
+
+
+echo "🔍 Checking Argo CD locally..."
+
+if ! curl -k https://localhost:${ARGOCD_LOCAL_PORT} >/dev/null 2>&1; then
+  echo "❌ Argo CD not reachable locally"
+  exit 1
+fi
+
+echo "✅ Argo CD reachable on https://localhost:${ARGOCD_LOCAL_PORT}"
+
+
+echo "🌍 Starting ngrok tunnel..."
+
+ngrok http https://localhost:${ARGOCD_LOCAL_PORT} \
+  --log=stdout \
+  > /tmp/ngrok.log 2>&1 &
+
+NGROK_PID=$!
+sleep 8
+
+
+NGROK_URL=$(curl -s http://localhost:4040/api/tunnels \
+  | jq -r '.tunnels[] | select(.proto=="https") | .public_url')
+
+if [ -z "$NGROK_URL" ]; then
+  echo "❌ Failed to get ngrok public URL"
+  exit 1
+fi
+
+echo "✅ Argo CD available at:"
+echo "👉 $NGROK_URL"
+
