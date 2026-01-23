@@ -45,3 +45,26 @@ else
 fi
 
 kubectl config use-context k3d-$CLUSTER_NAME
+
+
+echo "📦 Installation d'Argo CD"
+
+kubectl create namespace argocd --dry-run=client -o yaml | kubectl apply -f -
+
+kubectl apply -n argocd \
+  -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+
+echo "⏳ Attente du démarrage d'Argo CD"
+kubectl wait --for=condition=available deployment/argocd-server \
+  -n argocd --timeout=180s
+
+
+echo "🔐 Configuration du mot de passe Argo CD"
+
+HASHED_PASSWORD=$(htpasswd -nbBC 10 "" $ARGOCD_PASSWORD | tr -d ':\n')
+
+kubectl patch secret argocd-secret -n argocd \
+  -p "{\"stringData\": {
+    \"admin.password\": \"$HASHED_PASSWORD\",
+    \"admin.passwordMtime\": \"$(date +%FT%T%Z)\"
+  }}"
