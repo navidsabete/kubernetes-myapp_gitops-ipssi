@@ -163,4 +163,3 @@ fi
 
 echo "✅ Argo CD available at:"
 echo "👉 $NGROK_URL"
-
