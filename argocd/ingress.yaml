@@ -7,7 +7,6 @@ metadata:
     nginx.ingress.kubernetes.io/rewrite-target: /
 spec:
   rules:
-    - host: https://cathodoluminescent-lavette-moraceous.ngrok-free.dev
       http:
         paths:
           - path: /argocd
