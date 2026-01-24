@@ -118,7 +118,7 @@ kubectl wait \
   --namespace argocd \
   --for=condition=Available \
   deployment/argocd-server \
-  --timeout=180s
+  --timeout=200s
 
 
 echo "🚀 Starting port-forward for Argo CD..."

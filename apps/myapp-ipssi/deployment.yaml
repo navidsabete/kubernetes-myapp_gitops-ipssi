@@ -17,19 +17,19 @@ spec:
     spec:
       containers:
         - name: myapp-cicd-kubernetes-ipssi
-          image: nsabeteisfahaniipssi/myapp-cicd-kubernetes-ipssi:v1
+          image: nsabeteisfahaniipssi/myapp-cicd-kubernetes-ipssi:v0
           imagePullPolicy: Always
           ports:
             - containerPort: 8080
           readinessProbe:
             httpGet:
               path: /
-              port: 8080
+              port: 8081
             initialDelaySeconds: 5
             periodSeconds: 5
           livenessProbe:
             httpGet:
               path: /
-              port: 8080
+              port: 8081
             initialDelaySeconds: 10
             periodSeconds: 10
