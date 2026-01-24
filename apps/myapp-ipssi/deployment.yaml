@@ -20,16 +20,4 @@ spec:
           image: nsabeteisfahaniipssi/myapp-cicd-kubernetes-ipssi:v0
           imagePullPolicy: Always
           ports:
-            - containerPort: 8080
-          readinessProbe:
-            httpGet:
-              path: /
-              port: 8081
-            initialDelaySeconds: 5
-            periodSeconds: 5
-          livenessProbe:
-            httpGet:
-              path: /
-              port: 8081
-            initialDelaySeconds: 10
-            periodSeconds: 10
+            - containerPort: 8081
