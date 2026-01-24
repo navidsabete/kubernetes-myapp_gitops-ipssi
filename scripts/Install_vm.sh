@@ -163,3 +163,17 @@ fi
 
 echo "✅ Argo CD available at:"
 echo "👉 $NGROK_URL"
+
+
+# Vérifier si la CLI Argo CD est installée
+if ! command -v argocd >/dev/null 2>&1; then
+  echo "🚀 Argo CD CLI non trouvée. Installation en cours..."
+  sudo curl -sSL -o /usr/local/bin/argocd https://github.com/argoproj/argo-cd/releases/latest/download/argocd-linux-amd64
+  sudo chmod +x /usr/local/bin/argocd
+  echo "✅ Argo CD CLI installée"
+else
+  echo "✅ Argo CD CLI déjà présente"
+fi
+
+# Afficher la version pour vérification
+argocd version

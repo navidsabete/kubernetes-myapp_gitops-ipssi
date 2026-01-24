@@ -6,7 +6,7 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: 'https://github.com/navidsabete/kubernetes-myapp-ipssi'
+    repoURL: 'https://github.com/navidsabete/kubernetes-myapp_gitops-ipssi'
     targetRevision: main
     path: apps/myapp-ipssi
   destination:
