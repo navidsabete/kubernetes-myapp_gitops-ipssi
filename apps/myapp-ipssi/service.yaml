@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: myapp-cicd-kubernetes-ipssi
+  namespace: dev
+spec:
+  selector:
+    app: myapp-cicd-kubernetes-ipssi
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080
+  type: ClusterIP

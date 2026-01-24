@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myapp-cicd-kubernetes-ipssi
+  namespace: dev
+  labels:
+    app: myapp-cicd-kubernetes-ipssi
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: myapp-cicd-kubernetes-ipssi
+  template:
+    metadata:
+      labels:
+        app: myapp-cicd-kubernetes-ipssi
+    spec:
+      containers:
+        - name: myapp-cicd-kubernetes-ipssi
+          image: nsabeteisfahaniipssi/myapp-cicd-kubernetes-ipssi:v1
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 8080
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 8080
+            initialDelaySeconds: 10
+            periodSeconds: 10
