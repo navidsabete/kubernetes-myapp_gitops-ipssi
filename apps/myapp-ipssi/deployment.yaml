@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: myapp-cicd-kubernetes-ipssi
-          image: nsabeteisfahaniipssi/myapp-cicd-kubernetes-ipssi:v0
+          image: nsabeteisfahaniipssi/myapp-cicd-kubernetes-ipssi:v1
           imagePullPolicy: Always
           ports:
             - containerPort: 8081
