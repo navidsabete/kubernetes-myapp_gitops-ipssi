@@ -31,10 +31,7 @@ done
 echo "⏳ Waiting for Argo CD pods to be ready..."
 kubectl wait --for=condition=Ready pods -n $ARGOCD_NAMESPACE --all --timeout=300s
 
-#kubectl rollout restart deployment argocd-server -n $ARGOCD_NAMESPACE
-#kubectl rollout restart deployment argocd-repo-server -n $ARGOCD_NAMESPACE
-#kubectl rollout restart deployment argocd-application-controller -n $ARGOCD_NAMESPACE
-#kubectl rollout restart deployment argocd-dex-server -n $ARGOCD_NAMESPACE
+
 
 # ---------------------------
 # Port-forward Argo CD
